@@ -138,9 +138,8 @@ a {
   
   .prev,
   .next {
-    background-size: 22px;
-    background-position: center;
-    background-repeat: no-repeat;
+    size: 22px;
+    align-items: center;
     cursor: pointer;
   }
   

@@ -79,7 +79,7 @@ class App extends Component {
       e.preventDefault();
       posInitial = items.offsetLeft;
 
-      if (e.type == 'touchstart') {
+      if (e.type === 'touchstart') {
         posX1 = e.touches[0].clientX;
       } else {
         posX1 = e.clientX;
@@ -91,7 +91,7 @@ class App extends Component {
     function dragAction(e) {
       e = e || window.event;
 
-      if (e.type == 'touchmove') {
+      if (e.type === 'touchmove') {
         posX2 = posX1 - e.touches[0].clientX;
         posX1 = e.touches[0].clientX;
       } else {
@@ -121,10 +121,10 @@ class App extends Component {
       if (allowShift) {
         if (!action) { posInitial = items.offsetLeft; }
 
-        if (dir == 1) {
+        if (dir === 1) {
           items.style.left = (posInitial - slideSize) + "px";
           index++;
-        } else if (dir == -1) {
+        } else if (dir === -1) {
           items.style.left = (posInitial + slideSize) + "px";
           index--;
         }
@@ -136,12 +136,12 @@ class App extends Component {
     function checkIndex() {
       items.classList.remove('shifting');
 
-      if (index == -1) {
+      if (index === -1) {
         items.style.left = -(slidesLength * slideSize) + "px";
         index = slidesLength - 1;
       }
 
-      if (index == slidesLength) {
+      if (index === slidesLength) {
         items.style.left = -(1 * slideSize) + "px";
         index = 0;
       }
