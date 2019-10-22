@@ -85,14 +85,14 @@ a {
 
 
   .slider {
-    width: 80%;
+    width: 100%;
   }
 
   
   .wrapper {
     overflow: hidden;
     position: relative;
-    background: #a1a1a1;
+    background: #FFCF47;
     z-index: 1;
   }
   
@@ -119,9 +119,6 @@ a {
     transition: all 1s;
     position: relative;
     background: #FFCF47;
-  }
-  .slide img {
-    width: 40%;
   }
 
   .control {
@@ -155,4 +152,31 @@ a {
   .prev:active,
   .next:active {
     transform: scale(0.8);
+  }
+.poster {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 1s;
+    position: relative;
+}
+  .poster img {
+    width: 125px;
+    height: 190px
+  }
+
+  .nota {
+    height: 40px;
+    width: 40px;
+    top:5px;
+    right:5px;
+    position: absolute;
+    border-radius:7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size:1.4rem;
+    font-weight: bold;
+    color: #fff;
   }

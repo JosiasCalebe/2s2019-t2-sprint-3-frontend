@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './pages/Home/App';
 import Cadastro from './pages/Cadastrar';
+import Busca from './pages/Busca';
 import * as serviceWorker from './serviceWorker';
 
 const routing = (
@@ -12,6 +13,7 @@ const routing = (
             <Switch>
                 <Route exact path='/' component={App} />
                 <Route exact path='/cadastrar' component={Cadastro} />
+                <Route path='/lancamentos/:titulo' component={Busca} />
 
             </Switch>
         </div>

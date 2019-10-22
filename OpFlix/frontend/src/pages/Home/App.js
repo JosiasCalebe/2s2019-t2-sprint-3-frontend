@@ -5,7 +5,6 @@ import '../../assets/css/reset.css';
 import '../../assets/css/style.css';
 import Axios from 'axios';
 import logo from '../../assets/img/logo.png';
-import poster from '../../assets/img/posters/joker.jpg';
 import { Link } from 'react-router-dom';
 
 class App extends Component {
@@ -30,7 +29,8 @@ class App extends Component {
           prev = document.getElementById('prev'),
           next = document.getElementById('next');
 
-        this.slide(slider, sliderItems, prev, next)});
+        this.slide(slider, sliderItems, prev, next)
+      });
 
 
 
@@ -165,7 +165,7 @@ class App extends Component {
           <div className="container">
             <img src={logo} />
             <div className="mainHeader-busca">
-              <input className="mainHeader-barra" placeHolder="Buscar..." type="text" />
+              <input className="mainHeader-barra" placeHolder="Buscar..." type="text" onKeyPress={(event) => event.key === 'Enter' ? this.props.history.push(`/lancamentos/` + event.target.value) : null} />
             </div>
             <nav className="mainHeader-nav">
               <a className="mainHeader-nav-item">Login</a>
@@ -179,30 +179,16 @@ class App extends Component {
               {this.state.lista.map(element => {
                 return (
                   <div className="slide">
-                    <img src={element.poster} />
+                    <div className="poster">
+                      <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40)?'#FF493F':'#FFC601'}}>{element.notaMedia}</p>
+                      <img src={`http://localhost:5000`+ element.poster} />
+                    </div>
+                    <br></br>
                     <p>{element.titulo}</p>
-                    <p>ano 2019</p>
+                    <p>{element.dataDeLancamento.slice(0,4)}</p>
                   </div>
                 )
               })}
-              <div className="slide">
-                <img src={poster}
-                />
-                <p>titulo</p>
-                <p>ano 2sdasad18</p>
-              </div>
-              <div className="slide">
-                <img src={poster}
-                />
-                <p>titulo</p>
-                <p>ano 111018</p>
-              </div>
-              <div className="slide">
-                <img src={poster}
-                />
-                <p>titulo</p>
-                <p>ano 22222018</p>
-              </div>
             </div>
           </div>
           <a id="prev" className="control prev"></a>
