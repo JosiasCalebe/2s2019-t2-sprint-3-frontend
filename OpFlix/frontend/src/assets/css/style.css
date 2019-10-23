@@ -154,6 +154,8 @@ a {
     transform: scale(0.8);
   }
 .poster {
+  width: 125px;
+    height: 190px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -167,11 +169,14 @@ a {
   }
 
   .nota {
-    height: 40px;
-    width: 40px;
     top:5px;
     right:5px;
     position: absolute;
+  }
+
+  .nota, .nota--reviews {
+    height: 40px;
+    width: 40px;
     border-radius:7px;
     display: flex;
     align-items: center;
@@ -179,4 +184,8 @@ a {
     font-size:1.4rem;
     font-weight: bold;
     color: #fff;
+  }
+
+  .review {
+    display:flex;
   }

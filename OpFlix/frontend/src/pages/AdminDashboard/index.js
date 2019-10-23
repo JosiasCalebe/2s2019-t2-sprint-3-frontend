@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../assets/css/reset.css';
 import '../../assets/css/style.css';
 import Axios from 'axios';
+import api, { ENDPOINT } from '../../services/api';
 
 class Cadastrar extends Component {
 
@@ -31,7 +32,7 @@ class Cadastrar extends Component {
     }
 
     listarCategorias = () => {
-        Axios.get("http://localhost:5000/api/categorias")
+        api.get("/categorias")
             .then(data => {
                 this.setState({ categorias: data.data });
                 console.log(data.data);
@@ -39,21 +40,21 @@ class Cadastrar extends Component {
     }
 
     listarPlataformas = () => {
-        Axios.get("http://localhost:5000/api/plataformas")
+        api.get("/plataformas")
             .then(data => {
                 this.setState({ plataformas: data.data });
             });
     }
 
     listarCategorias = () => {
-        Axios.get("http://localhost:5000/api/categorias")
+        api.get("/categorias")
             .then(data => {
                 this.setState({ categorias: data.data });
             });
     }
 
     buscarLancamento = async () => {
-        await Axios.get("http://localhost:5000/api/lancamentos/" + document.getElementById("cadastrar--lancamento--id").value)
+        await api.get("/lancamentos/" + document.getElementById("cadastrar--lancamento--id").value)
             .then(data => {
                 this.setState({ lancamento: data.data });
             });
@@ -97,7 +98,7 @@ class Cadastrar extends Component {
 
         await Axios({
             method: 'post',
-            url: 'http://localhost:5000/api/lancamentos',
+            url: ENDPOINT + '/lancamentos',
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
         });
@@ -119,7 +120,7 @@ class Cadastrar extends Component {
 
         await Axios({
             method: 'put',
-            url: 'http://localhost:5000/api/lancamentos/' + this.state.id,
+            url: ENDPOINT + '/lancamentos/' + this.state.id,
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
         });

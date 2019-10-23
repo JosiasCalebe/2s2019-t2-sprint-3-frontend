@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-
 import '../../assets/css/reset.css';
 import '../../assets/css/style.css';
-import Axios from 'axios';
+import api from '../../services/api';
+import { parseJwt } from '../../services/auth';
 import logo from '../../assets/img/logo.png';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   listarLancamentos = () => {
-    Axios.get("http://localhost:5000/api/lancamentos")
+    api.get("/lancamentos")
       //this.setState({ lista: xablau.data });
       .then(data => {
         this.setState({ lista: data.data });
@@ -165,10 +165,10 @@ class App extends Component {
           <div className="container">
             <img src={logo} />
             <div className="mainHeader-busca">
-              <input className="mainHeader-barra" placeHolder="Buscar..." type="text" onKeyPress={(event) => event.key === 'Enter' ? this.props.history.push(`/lancamentos/` + event.target.value) : null} />
+              <input className="mainHeader-barra" placeHolder="Buscar..." type="text" onKeyPress={(event) => event.key === 'Enter' ? this.props.history.push(`/buscar/` + event.target.value) : null} />
             </div>
             <nav className="mainHeader-nav">
-              <a className="mainHeader-nav-item">Login</a>
+              <Link className="mainHeader-nav-item" to="/login">Login</Link>
               <Link className="mainHeader-nav-cadastro" to="/cadastrar">Cadastrar-se</Link>
             </nav>
           </div>
@@ -178,7 +178,7 @@ class App extends Component {
             <div id="items" className="items">
               {this.state.lista.map(element => {
                 return (
-                  <div className="slide">
+                  <Link className="slide" to={"/lancamento/" + element.idLancamento}>
                     <div className="poster">
                       <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40)?'#FF493F':'#FFC601'}}>{element.notaMedia}</p>
                       <img src={`http://localhost:5000`+ element.poster} />
@@ -186,7 +186,7 @@ class App extends Component {
                     <br></br>
                     <p>{element.titulo}</p>
                     <p>{element.dataDeLancamento.slice(0,4)}</p>
-                  </div>
+                  </Link>
                 )
               })}
             </div>
