@@ -6,6 +6,7 @@ import Cadastro from './pages/Cadastro';
 import Busca from './pages/Busca';
 import Lancamento from './pages/Lancamento';
 import Login from './pages/Login';
+import Perfil from './pages/Perfil';
 import NEncontrado from './pages/NaoEncontrado';
 import { parseJwt } from './services/auth';
 
@@ -32,11 +33,35 @@ export default function Routes() {
                 }
             />
     )
+
+    const RouteLogged = ({ component: Component }) => (
+        localStorage.getItem('user') != null ?
+            <Route
+                render={
+                    props => localStorage.getItem('user') ? (
+                        <Component {...props} />
+                    ) : (
+                            <Redirect
+                                to={{ pathname: '/error404', state: { from: props.location } }}
+                            />
+                        )
+                }
+            /> : <Route
+                render={
+                    props =>
+                        <Redirect
+                            to={{ pathname: '/error404', state: { from: props.location } }}
+                        />
+                }
+            />
+    )
+
     return (
         <BrowserRouter>
             <Switch>
                 <Route exact path='/' component={App} />
                 <RouteAdmin path='/admin/cadastrar' component={AdminCadastro}/>
+                <RouteLogged path='/usuario' component={Perfil} />
                 <Route path='/cadastrar' component={Cadastro} />
                 <Route path='/login' component={Login} />
                 <Route path='/buscar/:titulo' component={Busca} />

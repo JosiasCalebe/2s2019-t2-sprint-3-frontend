@@ -1,57 +1,160 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import '../../assets/css/reset.css';
 import '../../assets/css/style.css';
-import api from '../../services/api';
+import api, { ENDPOINT } from '../../services/api';
+import Axios from 'axios';
 
-export default function Busca(props) {
 
-    const [lancamento, setLancamento] = useState({});
-    const { id } = props.match.params;
+export default class Busca extends Component {
 
-    async function buscarLancamentos(id) {
-        await api.get("/lancamentos/" + id)
-            .then(data => {
-
-                setLancamento(data.data);
-            });
+    constructor() {
+        super();
+        this.state = {
+            favorito:false,
+            lancamento: {},
+            nota: 0,
+            review: ''
+        };
     }
 
 
-    buscarLancamentos(id);
+buscarLancamentos = async (id) => {
+    await api.get("/lancamentos/" + id)
+        .then(data => {
+            this.setState({lancamento: data.data});
+        });
+}
 
+
+escreverReview = async (event) => {
+    event.preventDefault();
+    await Axios({
+        method: 'post',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/lancamentos/' + this.props.match.params.id,
+        data: { nota : this.state.nota, review : this.state.review },
+        config: {
+            headers: { 'Content-Type': 'application/json' }
+        }
+    }).then(data => {
+        console.log(data);
+    });
+}
+checarFav = async () => {
+    await Axios({
+        method: 'get',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/lancamentos/favoritos/' + this.props.match.params.id,
+        config: {
+            headers: { 'Content-Type': 'application/json' }
+        }
+    })
+    .then(data => {
+        console.log(data.data);
+        this.setState({favorito: data.data});
+    });
+}
+
+desfavoritar = async(event) => {
+    event.preventDefault();
+    await Axios({
+        method: 'delete',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/lancamentos/favoritos',
+        data: { idLancamento : this.props.match.params.id },
+        config: {
+            headers: { 'Content-Type': 'application/json' }
+        }
+    }).then(data => {
+        console.log(data);
+    });
+}
+
+favoritar = async (event) => {
+    event.preventDefault();
+    await Axios({
+        method: 'post',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/lancamentos/favoritos',
+        data: { idLancamento : this.props.match.params.id },
+        config: {
+            headers: { 'Content-Type': 'application/json' }
+        }
+    }).then(data => {
+        console.log(data);
+    });
+}
+
+showValue = async (newValue) => {
+    document.getElementById("number").innerHTML = newValue;
+    this.setState({nota : document.getElementById("number").value});
+}
+
+changeRangeValue = async (val) => {
+    document.getElementById("range").value = isNaN(parseInt(val, 10)) ? 0 : parseInt(val, 10);
+    this.showValue(val);
+}
+
+changeInputValue = async (val) => {
+    document.getElementById("number").value = isNaN(parseInt(val, 10)) ? 0 : parseInt(val, 10);
+    this.showValue(val);
+}
+componentDidMount(){
+    this.checarFav();
+    this.buscarLancamentos(this.props.match.params.id);
+}
+
+render() {
     return (
+
         <div className="Busca">
 
             <div>
                 <div className="poster">
-                    <p className="nota" style={{ backgroundColor: (lancamento.notaMedia > 60) ? 'green' : (lancamento.notaMedia < 40) ? '#FF493F' : '#FFC601' }}>{lancamento.notaMedia}</p>
-                    <img src={`http://localhost:5000` + lancamento.poster} />
+                    <p className="nota" style={{ backgroundColor: (this.state.lancamento.notaMedia > 60) ? 'green' : (this.state.lancamento.notaMedia < 40) ? '#FF493F' : '#FFC601' }}>{this.state.lancamento.notaMedia}</p>
+                    <img src={`http://localhost:5000` + this.state.lancamento.poster} alt="poster" />
                 </div>
                 <br></br>
-                <p>{lancamento.titulo}</p>
-                <p>{new Date(lancamento.dataDeLancamento).toLocaleDateString("pt-BR")}</p>
+                <p>{this.state.lancamento.titulo}</p>
+                <br />
+                <p>{this.state.lancamento.sinopse}</p>
+                <br />
+                <p>{this.state.lancamento.tempoDeDuracao}</p>
+                <br />
+                <p>{new Date(this.state.lancamento.dataDeLancamento).toLocaleDateString("pt-BR")}</p>
+                <button onClick={this.state.favorito ? this.desfavoritar : this.favoritar}>{this.state.favorito ? "Desfavoritar" : "Favoritar"}</button>
             </div>
-            <br/>
+            <br />
             <p>Reviews: </p>
+            <br />
+            <form className="write-review">
+                <label htmlFor="number">Nota: </label>
+                <input type="number" id="number" min="0" max="100" onChange={event => this.changeRangeValue(event.target.value)} />
+                <br />
+                <input type="range" min="0" max="100" id="range" name="monday" step="5" onChange={event => this.changeInputValue(event.target.value)} />
+                <p>Escreva sua review: </p>
+                <textarea onChange={event => this.setState({review: event.target.value})} />
+                <button type="submit" onClick={this.escreverReview}>Enviar Review</button>
+            </form>
             <div>
                 {
-                    lancamento.reviews == undefined ? '' :
-                    lancamento.reviews.map(element => {
-                        return (
-                            <div>
-                                <br/>
-                                <div className="review">
-                                <p></p>
-                                <p className="nota--reviews" style={{ backgroundColor: (element.nota > 60) ? 'green' : (element.nota < 40) ? '#FF493F' : '#FFC601' }}>{element.nota}</p>
-                                <p>{element.review}</p>
+                    this.state.lancamento.reviews === undefined ? '' :
+                    this.state.lancamento.reviews.map(element => {
+                            return (
+                                <div>
+                                    <br />
+                                    <div className="review">
+                                        <p></p>
+                                        <p className="nota--reviews" style={{ backgroundColor: (element.nota > 60) ? 'green' : (element.nota < 40) ? '#FF493F' : '#FFC601' }}>{element.nota}</p>
+                                        <p>{element.review}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })
+                            )
+                        })
                 }
             </div>
         </div>
 
     )
-
+}
 }

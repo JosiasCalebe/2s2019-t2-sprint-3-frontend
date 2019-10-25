@@ -98,6 +98,7 @@ class Cadastrar extends Component {
 
         await Axios({
             method: 'post',
+            headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
             url: ENDPOINT + '/lancamentos',
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
@@ -120,6 +121,7 @@ class Cadastrar extends Component {
 
         await Axios({
             method: 'put',
+            headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
             url: ENDPOINT + '/lancamentos/' + this.state.id,
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
@@ -130,7 +132,6 @@ class Cadastrar extends Component {
         this.listarCategorias();
         this.listarPlataformas();
     }
-
 
     render() {
         return (

@@ -168,8 +168,17 @@ class App extends Component {
               <input className="mainHeader-barra" placeHolder="Buscar..." type="text" onKeyPress={(event) => event.key === 'Enter' ? this.props.history.push(`/buscar/` + event.target.value) : null} />
             </div>
             <nav className="mainHeader-nav">
-              <Link className="mainHeader-nav-item" to="/login">Login</Link>
-              <Link className="mainHeader-nav-cadastro" to="/cadastrar">Cadastrar-se</Link>
+              {localStorage.getItem('user') ?
+                <div>
+                  <Link className="mainHeader-nav-item" onClick={event => localStorage.clear('user')}>Logoff</Link>
+                  <Link className="mainHeader-nav-item" to="/usuario">{parseJwt().NomeUsuario}</Link>
+                </div> :
+                <div>
+                  <Link className="mainHeader-nav-item" to="/login">Login</Link>
+                  <Link className="mainHeader-nav-cadastro" to="/cadastrar">Cadastrar-se</Link>
+                </div>
+              }
+
             </nav>
           </div>
         </header>
@@ -180,12 +189,12 @@ class App extends Component {
                 return (
                   <Link className="slide" to={"/lancamento/" + element.idLancamento}>
                     <div className="poster">
-                      <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40)?'#FF493F':'#FFC601'}}>{element.notaMedia}</p>
-                      <img src={`http://localhost:5000`+ element.poster} />
+                      <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40) ? '#FF493F' : '#FFC601' }}>{element.notaMedia}</p>
+                      <img src={`http://localhost:5000` + element.poster} alt="poster"/>
                     </div>
                     <br></br>
                     <p>{element.titulo}</p>
-                    <p>{element.dataDeLancamento.slice(0,4)}</p>
+                    <p>{element.dataDeLancamento.slice(0, 4)}</p>
                   </Link>
                 )
               })}
