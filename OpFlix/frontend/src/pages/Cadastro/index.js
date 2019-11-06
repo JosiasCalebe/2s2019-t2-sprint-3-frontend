@@ -45,15 +45,9 @@ class Cadastrar extends Component {
         config: {headers:{'Content-Type': 'application/json'}}
     }).then(response => {
             if (response.status === 200) {
-                localStorage.setItem('user', response.data.token);
-                this.props.history.push('/');
+                this.props.history.push('/login');
             } else {
                 console.log(response.status);
-            }
-        })
-        .catch(error => {
-            if (error.response.status === 404) {
-            console.log('ta');
             }
         });
 }
