@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import '../../assets/css/reset.css';
 import '../../assets/css/style.css';
-import api from '../../services/api';
+import api,{ ENDPOINT} from '../../services/api';
 import { parseJwt } from '../../services/auth';
 import logo from '../../assets/img/logo.png';
 import { Link } from 'react-router-dom';
@@ -143,7 +143,7 @@ class App extends Component {
                   <Link className="slide" to={"/lancamento/" + element.idLancamento}>
                     <div className="poster">
                       <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40) ? '#FF493F' : '#FFC601' }}>{element.notaMedia}</p>
-                      <img src={`http://localhost:5000` + element.poster} alt="poster"/>
+                      <img src={ENDPOINT + element.poster} alt="poster"/>
                     </div>
                     <br></br>
                     <p>{element.titulo}</p>

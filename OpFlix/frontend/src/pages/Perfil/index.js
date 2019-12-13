@@ -19,7 +19,7 @@ class Favoritos extends Component {
     await Axios({
         method: 'get',
         headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
-        url: ENDPOINT + '/usuarios'
+        url: ENDPOINT + '/api/usuarios'
     }).then(data => {
         this.setState({favoritos : data.data.favoritos});
         });
@@ -49,7 +49,7 @@ class Favoritos extends Component {
                             <Link className="slide" to={"/lancamento/" + element.idLancamento}>
                                 <div className="poster">
                                     <p className="nota" style={{ backgroundColor: (element.notaMedia > 60) ? 'green' : (element.notaMedia < 40) ? '#FF493F' : '#FFC601' }}>{element.notaMedia}</p>
-                                    <img src={`http://localhost:5000` + element.poster} />
+                                    <img src={ENDPOINT + element.poster} />
                                 </div>
                                 <br></br>
                                 <p>{element.titulo}</p>

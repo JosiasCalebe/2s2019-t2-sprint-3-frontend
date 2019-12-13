@@ -13,6 +13,8 @@ class Cadastrar extends Component {
             selecionado: '',
             metodo: '',
             novoPoster: '',
+            categoria: '',
+            plataforma: '',
             categorias: [],
             plataformas: [],
             lancamento: {},
@@ -53,12 +55,27 @@ class Cadastrar extends Component {
             });
     }
 
+    buscarCategoria = async () => {
+        await api.get("/categorias/" + document.getElementById("cadastrar--lancamento--id").value)
+        .then(data => {
+            this.setState({ categoria: data.data.categoria });
+        });
+    document.getElementById("input--categoria").value = this.state.categoria;
+    }
+
+    buscarPlataforma = async () => {
+        await api.get("/plataformas/" + document.getElementById("cadastrar--lancamento--id").value)
+        .then(data => {
+            this.setState({ plataforma: data.data.plataforma });
+        });
+    document.getElementById("input--plataforma").value = this.state.plataforma;
+    }
+
     buscarLancamento = async () => {
         await api.get("/lancamentos/" + document.getElementById("cadastrar--lancamento--id").value)
             .then(data => {
                 this.setState({ lancamento: data.data });
             });
-        console.log(this.state.lancamento);
         this.setState({
               idCategoria: this.state.lancamento.idCategoria
             , idPlataforma: this.state.lancamento.idPlataforma
@@ -79,7 +96,6 @@ class Cadastrar extends Component {
         document.getElementById("cadastrar--lancamento--duracao").value = this.state.lancamento.tempoDeDuracao;
         document.getElementById("cadastrar--lancamento--midia").value = this.state.lancamento.tipoDeMidia;
         document.getElementById("cadastrar--lancamento--episodios").value = this.state.lancamento.episodios;
-        console.log(this.state);
     }
 
     addLancamento = async (event) => {
@@ -99,7 +115,7 @@ class Cadastrar extends Component {
         await Axios({
             method: 'post',
             headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
-            url: ENDPOINT + '/lancamentos',
+            url: ENDPOINT + '/api/lancamentos',
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
         });
@@ -122,11 +138,55 @@ class Cadastrar extends Component {
         await Axios({
             method: 'put',
             headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
-            url: ENDPOINT + '/lancamentos/' + this.state.id,
+            url: ENDPOINT + '/api/lancamentos/' + this.state.id,
             data: bodyFormData,
             config: { headers: { 'Content-Type': 'multipart/form-data' } }
         });
     }
+
+    alterarCategoria = async (event) => {
+        event.preventDefault();
+        await Axios({
+            method: 'put',
+            headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+            url: ENDPOINT + '/api/categorias/' + this.state.id,
+            data: {categoria : this.state.categoria},
+            config: { headers: { 'Content-Type': 'application/json' } }
+        });
+    }
+
+    alterarPlataforma = async (event) => {
+        event.preventDefault();
+        await Axios({
+            method: 'put',
+            headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+            url: ENDPOINT + '/api/plataformas/' + this.state.id,
+            data: {plataforma : this.state.plataforma},
+            config: { headers: { 'Content-Type': 'application/json' } }
+        });
+    }
+
+    addCategoria = async (event) => {
+    event.preventDefault();
+    await Axios({
+        method:'post',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/api/categorias',
+        data: {categoria : this.state.categoria},
+        config: {headers:{'Content-Type': 'application/json'}}
+    });
+}
+
+addPlataforma = async (event) => {
+    event.preventDefault();
+    await Axios({
+        method:'post',
+        headers: { 'Authorization': "bearer " + localStorage.getItem('user') },
+        url: ENDPOINT + '/api/plataformas',
+        data: {plataforma : this.state.plataforma},
+        config: {headers:{'Content-Type': 'application/json'}}
+    });
+}
 
     componentDidMount() {
         this.listarCategorias();
@@ -150,7 +210,7 @@ class Cadastrar extends Component {
                 </select>
                 <div style={{ display: (this.state.metodo === "E") ? 'block' : 'none' }}>
                     <input id="cadastrar--lancamento--id" type="number" onChange={event => { this.setState({ id: event.target.value }); }} />
-                    <button onClick={this.buscarLancamento}>autocomplete</button>
+                    <button onClick={(this.state.selecionado === "L")?this.buscarLancamento:(this.state.selecionado === "C")?this.buscarCategoria:(this.state.selecionado === "P")?this.buscarPlataforma:this.buscarUsuario}>autocomplete</button>
                 </div>
                 <div id="cadastrar--lancamento" style={{ display: (this.state.selecionado === "L") ? 'block' : 'none' }}>
                     <form>
@@ -196,15 +256,17 @@ class Cadastrar extends Component {
                         </select>
                         <input type="file" onChange={event => { this.setState({ poster: event.target.files[0] }); }} style={{ display: (this.state.novoPoster === "S" || (this.state.selecionado === "L" && this.state.metodo === "A")) ? 'block' : 'none' }}></input>
 
-                        <button onClick={(this.state.metodo === "E") ? this.alterarLancamento : this.addLancamento}>xablau</button>
+                        <button onClick={(this.state.metodo === "E") ? this.alterarLancamento : this.addLancamento}>adicionar</button>
                     </form>
                 </div>
 
                 <div className="cadatrar--categoria" style={{ display: (this.state.selecionado == "C") ? 'block' : 'none' }}>
-                    <input type="text" />
+                    <input type="text" id="input--categoria" onChange={event => { this.setState({ categoria: event.target.value }) }}/>
+                    <button onClick={(this.state.metodo === "E") ? this.alterarCategoria : this.addCategoria}>adicionar</button>
                 </div>
                 <div className="cadastrar--plataforma" style={{ display: (this.state.selecionado == "P") ? 'block' : 'none' }}>
-                    <input type="text" />
+                    <input type="text" id="input--plataforma" onChange={event => { this.setState({ plataforma: event.target.value }) }}/>
+                    <button onClick={(this.state.metodo === "E") ? this.alterarPlataforma : this.addPlataforma}>adicionar</button>
                 </div>
             </div>
 

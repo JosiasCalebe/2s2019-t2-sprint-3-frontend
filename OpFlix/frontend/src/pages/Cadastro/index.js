@@ -40,7 +40,7 @@ class Cadastrar extends Component {
 
     await Axios({
         method:'post',
-        url: ENDPOINT + '/usuarios/cadastrar',
+        url: ENDPOINT + '/api/usuarios/cadastrar',
         data: this.state.usuario,
         config: {headers:{'Content-Type': 'application/json'}}
     }).then(response => {
